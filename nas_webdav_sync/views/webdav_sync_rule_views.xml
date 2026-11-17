@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_webdav_sync_rule_form" model="ir.ui.view">
+        <field name="name">webdav.sync.rule.form</field>
+        <field name="model">webdav.sync.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="model_id" options="{'no_create': True}"/>
+                            <field name="model_name" invisible="1"/>
+                            <field name="folder_name"/>
+                            <field name="record_subfolder"/>
+                        </group>
+                        <group>
+                            <field name="sync_from"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <label for="domain"/>
+                    <field name="domain" widget="domain"
+                           options="{'model': 'model_name', 'in_dialog': True}"
+                           invisible="not model_name"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

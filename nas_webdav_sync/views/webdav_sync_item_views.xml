@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_webdav_sync_item_list" model="ir.ui.view">
+        <field name="name">webdav.sync.item.list</field>
+        <field name="model">webdav.sync.item</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0"
+                  decoration-danger="state == 'error'" decoration-muted="state == 'pending'">
+                <field name="sync_date"/>
+                <field name="backend_id"/>
+                <field name="attachment_name"/>
+                <field name="res_model" optional="show"/>
+                <field name="remote_path"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'" decoration-danger="state == 'error'"/>
+                <field name="attempts" optional="hide"/>
+                <field name="error_message" optional="show"/>
+                <button name="action_open_record" type="object" icon="fa-external-link"
+                        title="Open document"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_webdav_sync_item_search" model="ir.ui.view">
+        <field name="name">webdav.sync.item.search</field>
+        <field name="model">webdav.sync.item</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="attachment_name"/>
+                <field name="remote_path"/>
+                <field name="backend_id"/>
+                <filter name="done" string="Synced" domain="[('state', '=', 'done')]"/>
+                <filter name="error" string="Errors" domain="[('state', '=', 'error')]"/>
+                <separator/>
+                <filter name="group_backend" string="Server" context="{'group_by': 'backend_id'}"/>
+                <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_webdav_sync_item" model="ir.actions.act_window">
+        <field name="name">Sync Log</field>
+        <field name="res_model">webdav.sync.item</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

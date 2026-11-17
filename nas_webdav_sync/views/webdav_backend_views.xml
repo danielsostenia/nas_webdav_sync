@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_webdav_backend_list" model="ir.ui.view">
+        <field name="name">webdav.backend.list</field>
+        <field name="model">webdav.backend</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="server_type"/>
+                <field name="url"/>
+                <field name="last_sync"/>
+                <field name="last_sync_message"/>
+                <field name="synced_count" string="Synced"/>
+                <field name="error_count" string="Errors"
+                       decoration-danger="error_count &gt; 0"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_webdav_backend_form" model="ir.ui.view">
+        <field name="name">webdav.backend.form</field>
+        <field name="model">webdav.backend</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_test_connection" type="object"
+                            string="Test connection" class="btn-primary"/>
+                    <button name="action_sync_now" type="object" string="Sync now"/>
+                    <button name="action_retry_errors" type="object" string="Retry errors"
+                            invisible="error_count == 0"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_items" type="object"
+                                class="oe_stat_button" icon="fa-check-circle">
+                            <field name="synced_count" widget="statinfo" string="Synced files"/>
+                        </button>
+                        <button name="action_view_items" type="object"
+                                class="oe_stat_button text-danger" icon="fa-exclamation-triangle"
+                                invisible="error_count == 0">
+                            <field name="error_count" widget="statinfo" string="Errors"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Office Synology"/></h1>
+                    </div>
+                    <group>
+                        <group string="Server">
+                            <field name="server_type" widget="radio"/>
+                            <field name="url" placeholder="https://nas.example.com:5006"/>
+                            <field name="username"/>
+                            <field name="password" password="True"/>
+                            <field name="root_folder"/>
+                        </group>
+                        <group string="Options">
+                            <field name="verify_ssl"/>
+                            <field name="delete_remote"/>
+                            <field name="batch_size"/>
+                            <field name="timeout"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Last sync">
+                        <field name="last_sync"/>
+                        <field name="last_sync_message"/>
+                    </group>
+                    <notebook>
+                        <page string="What to sync" name="rules">
+                            <field name="rule_ids">
+                                <list>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="model_id"/>
+                                    <field name="folder_name"/>
+                                    <field name="record_subfolder"/>
+                                    <field name="domain"/>
+                                    <field name="sync_from"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Help" name="help">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>Synology</h4>
+                                    <p>Install the <b>WebDAV Server</b> package, enable HTTPS
+                                        (port 5006) and use <code>https://your-nas:5006</code>.</p>
+                                    <h4>QNAP</h4>
+                                    <p>Control Panel → Web Server → WebDAV. URL:
+                                        <code>https://your-nas/webdav</code> or the share URL.</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4>Nextcloud / ownCloud</h4>
+                                    <p>Use <code>https://cloud/remote.php/dav/files/USERNAME</code>
+                                        and an <b>app password</b> (Settings → Security).</p>
+                                    <h4>TrueNAS</h4>
+                                    <p>Enable the WebDAV service and create a share; use its URL.</p>
+                                </div>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_webdav_backend" model="ir.actions.act_window">
+        <field name="name">NAS Servers</field>
+        <field name="res_model">webdav.backend</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Connect your first NAS or Nextcloud</p>
+            <p>Odoo will copy attachments to it automatically, in one folder per document.</p>
+        </field>
+    </record>
+</odoo>

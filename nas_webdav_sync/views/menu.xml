@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_webdav_root" name="NAS Sync"
+              web_icon="nas_webdav_sync,static/description/icon.png"
+              groups="base.group_system" sequence="90"/>
+    <menuitem id="menu_webdav_backend" name="Servers" parent="menu_webdav_root"
+              action="action_webdav_backend" sequence="10"/>
+    <menuitem id="menu_webdav_sync_item" name="Sync Log" parent="menu_webdav_root"
+              action="action_webdav_sync_item" sequence="20"/>
+</odoo>

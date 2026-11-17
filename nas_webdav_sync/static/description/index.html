@@ -1,0 +1,73 @@
+<section class="container" style="max-width:960px;margin:auto;font-family:Arial,Helvetica,sans-serif;color:#1f2937">
+  <div style="text-align:center;padding:32px 16px">
+    <h1 style="font-size:34px;margin-bottom:8px">NAS &amp; Nextcloud Sync for Odoo</h1>
+    <p style="font-size:19px;color:#4b5563;margin:0">
+      Your Odoo attachments, automatically copied to <b>Synology</b>, <b>QNAP</b>,
+      <b>TrueNAS</b> or <b>Nextcloud</b> &mdash; in clean, human-readable folders.
+    </p>
+    <p style="margin-top:18px">
+      <span style="background:#ecfdf5;color:#047857;padding:6px 14px;border-radius:20px;font-weight:bold">
+        One module &middot; No extra paid dependencies &middot; Set up in 5 minutes
+      </span>
+    </p>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:16px;padding:8px 16px">
+    <div style="flex:1 1 280px;border:1px solid #e5e7eb;border-radius:10px;padding:18px">
+      <h3 style="margin-top:0">📁 Folders that make sense</h3>
+      <p>Files land in <code>Odoo/Invoices/INV-2026-0042 (42)/scan.pdf</code>.
+         Anyone in the office can find them from Windows Explorer, Finder or the NAS app.</p>
+    </div>
+    <div style="flex:1 1 280px;border:1px solid #e5e7eb;border-radius:10px;padding:18px">
+      <h3 style="margin-top:0">⚙️ You choose what to sync</h3>
+      <p>Pick document types (invoices, sale orders, employees, projects&hellip;),
+         filter records with a domain, and choose whether to include old files.</p>
+    </div>
+    <div style="flex:1 1 280px;border:1px solid #e5e7eb;border-radius:10px;padding:18px">
+      <h3 style="margin-top:0">🔁 Fully automatic</h3>
+      <p>A scheduled job uploads new attachments every 15 minutes. Failed uploads are
+         retried automatically and listed in a clear sync log.</p>
+    </div>
+    <div style="flex:1 1 280px;border:1px solid #e5e7eb;border-radius:10px;padding:18px">
+      <h3 style="margin-top:0">🔒 Your data stays yours</h3>
+      <p>Files go straight from your Odoo server to your own NAS over HTTPS.
+         No third-party cloud, no subscription.</p>
+    </div>
+  </div>
+
+  <div style="padding:24px 16px">
+    <h2>Works with</h2>
+    <ul style="font-size:16px;line-height:1.8">
+      <li><b>Synology DSM</b> (WebDAV Server package)</li>
+      <li><b>QNAP QTS</b> (built-in WebDAV)</li>
+      <li><b>TrueNAS</b> (WebDAV service)</li>
+      <li><b>Nextcloud / ownCloud</b> (incl. app passwords)</li>
+      <li>Any RFC 4918 WebDAV server</li>
+    </ul>
+
+    <h2>Setup in 3 steps</h2>
+    <ol style="font-size:16px;line-height:1.8">
+      <li>Open <b>NAS Sync &rarr; Servers</b>, enter the WebDAV URL, username and password.</li>
+      <li>Click <b>Test connection</b>.</li>
+      <li>Add the document types you want under <b>What to sync</b>. Done.</li>
+    </ol>
+
+    <h2>Features</h2>
+    <ul style="font-size:16px;line-height:1.8">
+      <li>Multiple NAS servers, multi-company aware</li>
+      <li>One folder per document type, optional subfolder per record</li>
+      <li>Record filters (domain) and &ldquo;only files created after&rdquo; date</li>
+      <li>Optional: delete the NAS copy when the file is deleted in Odoo</li>
+      <li>Duplicate file names handled automatically</li>
+      <li>Sync log with status, errors and one-click retry</li>
+      <li>Self-signed certificates supported (for local NAS)</li>
+    </ul>
+
+    <h2>Requirements</h2>
+    <p>Odoo 19 Community or Enterprise, on Odoo.sh or on-premise. Your Odoo server must be able
+       to reach the NAS (public HTTPS address, VPN or same network).</p>
+
+    <h2>Support</h2>
+    <p>Questions or a custom need? Write to us &mdash; we answer within one business day.</p>
+  </div>
+</section>
