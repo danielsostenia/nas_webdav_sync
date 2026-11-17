@@ -106,8 +106,3 @@ layout and duplicate names, retries, batch size and record filters, an unreachab
 remote deletion (including a rolled back deletion), deleted records, access for regular
 users, re-upload of changed files, the unique constraint, one sync per server and the
 cron's intermediate commits.
-
-## Support
-
-Author: Sostenia (<https://www.sostenia.ro>). For support or customization requests,
-please contact the author.
