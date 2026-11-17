@@ -61,6 +61,7 @@
                             <field name="delete_remote"/>
                             <field name="batch_size"/>
                             <field name="timeout"/>
+                            <field name="alert_user_id"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="active" invisible="1"/>
                         </group>
@@ -79,6 +80,8 @@
                                     <field name="record_subfolder"/>
                                     <field name="domain"/>
                                     <field name="sync_from"/>
+                                    <field name="file_types" optional="show"/>
+                                    <field name="max_size_mb" optional="hide"/>
                                     <field name="active" widget="boolean_toggle"/>
                                 </list>
                             </field>

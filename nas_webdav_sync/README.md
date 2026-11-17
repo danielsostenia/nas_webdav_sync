@@ -31,7 +31,8 @@ Odoo/
   - folder name on the NAS and optional **one folder per record**;
   - optional **record filter** (domain), with `uid`, `user`, `company_id`,
     `company_ids`, `context_today()` and `relativedelta` available;
-  - optional **only files created after** date, to skip old attachments.
+  - optional **only files created after** date, to skip old attachments;
+  - optional **file types** (`pdf, xml, jpg`) and **maximum file size**.
 - Scheduled upload every 15 minutes, plus **Sync now** and **Test connection** buttons.
 - **Changed files are uploaded again** over the same remote file; saving the same content
   again uploads nothing, and renaming an attachment in Odoo does not create a new copy.
@@ -51,6 +52,10 @@ Odoo/
   - the scheduled job saves its progress after every file and stops cleanly when its time
     budget is spent, continuing on the next run;
   - a batch size limits how many files are uploaded per run.
+- **Alerts**: when the server is unreachable for an hour (4 failed runs) or a file gives up
+  after 5 attempts, the followers of the server get a message and the *Alert* user a To-Do
+  (only one open at a time).
+- Translated into Romanian (`i18n/ro.po`); `i18n/nas_webdav_sync.pot` for other languages.
 - Self-signed certificates supported (*Verify SSL certificate* option, for a local NAS).
 - Only administrators (*Settings* access) see the module and the sync log.
 
@@ -114,5 +119,5 @@ The suite (`tests/test_sync.py`) runs against an in-process mock WebDAV server
 layout and duplicate names, retries, batch size and record filters, an unreachable server,
 remote deletion (including a rolled back deletion), deleted records, access for regular
 users, re-upload of changed files (and no re-upload of identical content), the unique
-constraint, one sync per server, the cron's intermediate commits, the company filter
-and renamed record folders.
+constraint, one sync per server, the cron's intermediate commits, the company filter,
+renamed record folders, file type and size filters and the alerts.

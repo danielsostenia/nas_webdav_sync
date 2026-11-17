@@ -312,3 +312,55 @@ class TestNasSync(TransactionCase):
         self.assertEqual(att.webdav_item_ids.state, "done", "identical content: nothing to do")
         att.datas = base64.b64encode(b"other")
         self.assertEqual(att.webdav_item_ids.state, "pending")
+
+    def test_19_file_type_and_size_filter(self):
+        rule = self.backend.rule_ids
+        rule.write({"file_types": "PDF, .xml", "max_size_mb": 0.001})  # ~1 KB
+        pdf = self._att(self.partner, "a.pdf")
+        xml = self._att(self.partner, "b.XML")
+        jpg = self._att(self.partner, "c.jpg")
+        big = self._att(self.partner, "big.pdf", b"x" * 5000)
+        self.assertEqual(self.backend._sync(), (2, 0))
+        self.assertTrue(pdf.webdav_item_ids and xml.webdav_item_ids)
+        self.assertFalse(jpg.webdav_item_ids, "other file types are skipped")
+        self.assertFalse(big.webdav_item_ids, "files over the size limit are skipped")
+        rule.write({"file_types": False, "max_size_mb": 0})
+        self.assertEqual(self.backend._sync(), (2, 0))
+
+    def test_20_alert_on_failed_files(self):
+        todo = self.env.ref("mail.mail_activity_data_todo")
+        self.backend.alert_user_id = self.env.ref("base.user_admin")
+        att = self._att(self.partner, "f.txt")
+        self.store.fail_put.add("Odoo/Test/Partners/ACME _ SRL (%s)/f.txt" % self.partner.id)
+        for _i in range(4):
+            self.backend._sync()
+        self.assertFalse(self.backend.activity_ids, "no alert before the last attempt")
+        self.backend._sync()
+        self.assertEqual(att.webdav_item_ids.attempts, 5)
+        activity = self.backend.activity_ids
+        self.assertEqual(len(activity), 1)
+        self.assertEqual(activity.activity_type_id, todo)
+        self.assertEqual(activity.user_id, self.backend.alert_user_id)
+        self.assertIn("could not be uploaded", activity.summary)
+        self.assertIn("f.txt", self.backend.message_ids[0].body)
+        # a second failure does not pile up To-Dos
+        self.backend.item_ids.write({"attempts": 4})
+        self.backend._sync()
+        self.assertEqual(len(self.backend.activity_ids), 1)
+
+    def test_21_alert_when_server_unreachable(self):
+        self.backend.write({
+            "url": "http://127.0.0.1:1", "timeout": 1,
+            "alert_user_id": self.env.ref("base.user_admin").id,
+        })
+        for _i in range(3):
+            self.backend._sync()
+        self.assertEqual(self.backend.connection_failures, 3)
+        self.assertFalse(self.backend.activity_ids)
+        self.backend._sync()
+        self.assertIn("unreachable", self.backend.activity_ids.summary)
+        self.backend._sync()
+        self.assertEqual(len(self.backend.activity_ids), 1, "alerted once")
+        self.backend.url = self.url
+        self.backend._sync()
+        self.assertEqual(self.backend.connection_failures, 0, "reset when it works again")

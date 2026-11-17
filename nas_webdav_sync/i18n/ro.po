@@ -1,0 +1,821 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* nas_webdav_sync
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-17 18:03+0000\n"
+"PO-Revision-Date: 2026-11-17 18:03+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#. module: nas_webdav_sync
+#. odoo-python
+#: code:addons/nas_webdav_sync/models/webdav_backend.py:0
+msgid "%(count)s file(s) could not be uploaded to %(name)s"
+msgstr "%(count)s fișier(e) nu au putut fi încărcate pe %(name)s"
+
+#. module: nas_webdav_sync
+#. odoo-python
+#: code:addons/nas_webdav_sync/models/webdav_backend.py:0
+msgid "%(done)s file(s) uploaded, %(errors)s error(s)"
+msgstr "%(done)s fișier(e) încărcate, %(errors)s eroare/erori"
+
+#. module: nas_webdav_sync
+#. odoo-python
+#: code:addons/nas_webdav_sync/models/webdav_backend.py:0
+msgid "A sync of %s is already running. Try again in a moment."
+msgstr ""
+"O sincronizare pentru %s rulează deja. Încercați din nou peste câteva "
+"momente."
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__message_needaction
+msgid "Action Needed"
+msgstr "Acțiune necesară"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__active
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__active
+msgid "Active"
+msgstr "Activ"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__activity_ids
+msgid "Activities"
+msgstr "Activități"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Decorare excepție activitate"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__activity_state
+msgid "Activity State"
+msgstr "Stare activitate"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Iconiță tip activitate"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__alert_user_id
+msgid "Alert"
+msgstr "Alertă"
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "Archived"
+msgstr "Arhivat"
+
+#. module: nas_webdav_sync
+#: model:ir.model,name:nas_webdav_sync.model_ir_attachment
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__attachment_id
+msgid "Attachment"
+msgstr "Atașament"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__message_attachment_count
+msgid "Attachment Count"
+msgstr "Număr atașamente"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__attempts
+msgid "Attempts"
+msgstr "Încercări"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__backend_id
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__backend_id
+msgid "Backend"
+msgstr "Server"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__batch_size
+msgid "Batch Size"
+msgstr "Dimensiune lot"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__checksum
+msgid "Checksum"
+msgstr "Sumă de control"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_sync_rule__file_types
+msgid ""
+"Comma separated file extensions, e.g. pdf, xml, jpg. Leave empty for all "
+"files."
+msgstr ""
+"Extensii de fișier separate prin virgulă, de ex. pdf, xml, jpg. Lăsați gol "
+"pentru toate fișierele."
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__company_id
+msgid "Company"
+msgstr "Companie"
+
+#. module: nas_webdav_sync
+#: model_terms:ir.actions.act_window,help:nas_webdav_sync.action_webdav_backend
+msgid "Connect your first NAS or Nextcloud"
+msgstr "Conectați primul NAS sau Nextcloud"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__connection_failures
+msgid "Connection Failures"
+msgstr "Conectări eșuate"
+
+#. module: nas_webdav_sync
+#. odoo-python
+#: code:addons/nas_webdav_sync/models/webdav_backend.py:0
+msgid ""
+"Connection failed:\n"
+"%s"
+msgstr ""
+"Conectarea a eșuat:\n"
+"%s"
+
+#. module: nas_webdav_sync
+#. odoo-python
+#: code:addons/nas_webdav_sync/models/webdav_backend.py:0
+msgid "Connection successful"
+msgstr "Conectare reușită"
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid ""
+"Control Panel → Web Server → WebDAV. URL:\n"
+"                                        <code>https://your-nas/webdav</code> or the share URL."
+msgstr ""
+"Control Panel → Web Server → WebDAV. URL:\n"
+"                                        <code>https://your-nas/webdav</code> sau URL-ul share-ului."
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__create_uid
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__create_uid
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__create_uid
+msgid "Created by"
+msgstr "Creat de"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__create_date
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__create_date
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__create_date
+msgid "Created on"
+msgstr "Creat la"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__delete_remote
+msgid "Delete on NAS when deleted in Odoo"
+msgstr "Șterge de pe NAS când se șterge în Odoo"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_backend__verify_ssl
+msgid ""
+"Disable only for NAS devices with a self-signed certificate on a trusted "
+"network."
+msgstr ""
+"Dezactivați doar pentru NAS-uri cu certificat auto-semnat, într-o rețea de "
+"încredere."
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_ir_attachment__display_name
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__display_name
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__display_name
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__display_name
+msgid "Display Name"
+msgstr "Nume afișat"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__model_id
+msgid "Document type"
+msgstr "Tip document"
+
+#. module: nas_webdav_sync
+#: model:ir.model.constraint,message:nas_webdav_sync.constraint_webdav_sync_item_backend_attachment_uniq
+msgid "Each file is tracked only once per server."
+msgstr "Fiecare fișier este urmărit o singură dată pe server."
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "Enable the WebDAV service and create a share; use its URL."
+msgstr "Activați serviciul WebDAV și creați un share; folosiți URL-ul lui."
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields.selection,name:nas_webdav_sync.selection__webdav_sync_item__state__error
+msgid "Error"
+msgstr "Eroare"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__error_count
+msgid "Error Count"
+msgstr "Număr erori"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__error_message
+msgid "Error Message"
+msgstr "Mesaj de eroare"
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_list
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_sync_item_search
+msgid "Errors"
+msgstr "Erori"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_sync_rule__record_subfolder
+msgid "Example: Odoo/Invoices/INV-2026-0001 (42)/scan.pdf"
+msgstr "Exemplu: Odoo/Facturi/INV-2026-0001 (42)/scan.pdf"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_backend__url
+msgid ""
+"Examples:\n"
+"Synology: https://nas.example.com:5006\n"
+"QNAP: https://nas.example.com/webdav\n"
+"Nextcloud: https://cloud.example.com/remote.php/dav/files/USERNAME"
+msgstr ""
+"Exemple:\n"
+"Synology: https://nas.example.com:5006\n"
+"QNAP: https://nas.example.com/webdav\n"
+"Nextcloud: https://cloud.example.com/remote.php/dav/files/UTILIZATOR"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__folder_name
+msgid "Folder Name"
+msgstr "Nume folder"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_sync_rule__folder_name
+msgid "Folder on the NAS for this document type. Defaults to the model name."
+msgstr ""
+"Folderul de pe NAS pentru acest tip de document. Implicit, numele modelului."
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_backend__root_folder
+msgid "Folder on the server where Odoo files are stored. Created if missing."
+msgstr ""
+"Folderul de pe server unde se salvează fișierele Odoo. Se creează dacă "
+"lipsește."
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__message_follower_ids
+msgid "Followers"
+msgstr "Urmăritori"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Urmăritori (parteneri)"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_backend__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Iconiță Font Awesome, de ex. fa-tasks"
+
+#. module: nas_webdav_sync
+#. odoo-python
+#: code:addons/nas_webdav_sync/models/webdav_backend.py:0
+msgid ""
+"Gave up after %(max)s attempts (see the Sync Log, then use Retry errors):\n"
+"%(files)s"
+msgstr ""
+"Abandonat după %(max)s încercări (vedeți Jurnalul de sincronizare, apoi folosiți Reîncearcă erorile):\n"
+"%(files)s"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_backend__alert_user_id
+msgid ""
+"Gets a To-Do when the server is unreachable for an hour or files keep "
+"failing. Followers of the server are notified as well."
+msgstr ""
+"Primește un To-Do când serverul nu răspunde de o oră sau fișierele eșuează "
+"repetat. Și urmăritorii serverului sunt anunțați."
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__has_message
+msgid "Has Message"
+msgstr "Are mesaj"
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "Help"
+msgstr "Ajutor"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_ir_attachment__id
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__id
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__id
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__id
+msgid "ID"
+msgstr "ID"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__activity_exception_icon
+msgid "Icon"
+msgstr "Iconiță"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_backend__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Iconiță care indică o activitate de excepție."
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_backend__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Dacă este bifat, mesajele noi necesită atenția dumneavoastră."
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_backend__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Dacă este bifat, unele mesaje au o eroare de livrare."
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid ""
+"Install the <b>WebDAV Server</b> package, enable HTTPS\n"
+"                                        (port 5006) and use <code>https://your-nas:5006</code>."
+msgstr ""
+"Instalați pachetul <b>WebDAV Server</b>, activați HTTPS\n"
+"                                        (portul 5006) și folosiți <code>https://your-nas:5006</code>."
+
+#. module: nas_webdav_sync
+#. odoo-python
+#: code:addons/nas_webdav_sync/models/webdav_sync_rule.py:0
+msgid ""
+"Invalid filter for %(model)s:\n"
+"%(error)s"
+msgstr ""
+"Filtru invalid pentru %(model)s:\n"
+"%(error)s"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__message_is_follower
+msgid "Is Follower"
+msgstr "Este urmăritor"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_sync_rule__max_size_mb
+msgid "Larger files are not uploaded. 0 means no limit."
+msgstr "Fișierele mai mari nu se încarcă. 0 înseamnă fără limită."
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__last_sync
+msgid "Last Sync"
+msgstr "Ultima sincronizare"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__last_sync_message
+msgid "Last Sync Message"
+msgstr "Mesajul ultimei sincronizări"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__write_uid
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__write_uid
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__write_uid
+msgid "Last Updated by"
+msgstr "Ultima actualizare de"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__write_date
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__write_date
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__write_date
+msgid "Last Updated on"
+msgstr "Ultima actualizare la"
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "Last sync"
+msgstr "Ultima sincronizare"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_sync_rule__sync_from
+msgid "Leave empty to also upload existing attachments."
+msgstr "Lăsați gol pentru a încărca și atașamentele existente."
+
+#. module: nas_webdav_sync
+#. odoo-python
+#: code:addons/nas_webdav_sync/models/webdav_backend.py:0
+msgid "Linked record no longer exists"
+msgstr "Înregistrarea asociată nu mai există"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__max_size_mb
+msgid "Max file size (MB)"
+msgstr "Dimensiune maximă fișier (MB)"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_backend__batch_size
+msgid "Maximum number of files uploaded per scheduled run."
+msgstr "Numărul maxim de fișiere încărcate la o rulare programată."
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__message_has_error
+msgid "Message Delivery error"
+msgstr "Eroare livrare mesaj"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__message_ids
+msgid "Messages"
+msgstr "Mesaje"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__model_name
+msgid "Model"
+msgstr "Model"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Termenul activității mele"
+
+#. module: nas_webdav_sync
+#: model:ir.model,name:nas_webdav_sync.model_webdav_backend
+msgid "NAS / WebDAV Server"
+msgstr "Server NAS / WebDAV"
+
+#. module: nas_webdav_sync
+#: model:ir.actions.act_window,name:nas_webdav_sync.action_webdav_backend
+msgid "NAS Servers"
+msgstr "Servere NAS"
+
+#. module: nas_webdav_sync
+#: model:ir.ui.menu,name:nas_webdav_sync.menu_webdav_root
+msgid "NAS Sync"
+msgstr "Sincronizare NAS"
+
+#. module: nas_webdav_sync
+#: model:ir.model,name:nas_webdav_sync.model_webdav_sync_rule
+msgid "NAS Sync Rule"
+msgstr "Regulă sincronizare NAS"
+
+#. module: nas_webdav_sync
+#: model:ir.actions.server,name:nas_webdav_sync.ir_cron_webdav_sync_ir_actions_server
+msgid "NAS Sync: upload new attachments"
+msgstr "Sincronizare NAS: încarcă atașamentele noi"
+
+#. module: nas_webdav_sync
+#: model:ir.model,name:nas_webdav_sync.model_webdav_sync_item
+msgid "NAS Synced File"
+msgstr "Fișier sincronizat pe NAS"
+
+#. module: nas_webdav_sync
+#. odoo-python
+#: code:addons/nas_webdav_sync/models/webdav_backend.py:0
+msgid "NAS server %s is unreachable"
+msgstr "Serverul NAS %s nu răspunde"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__name
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__attachment_name
+msgid "Name"
+msgstr "Nume"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Termenul următoarei activități"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__activity_summary
+msgid "Next Activity Summary"
+msgstr "Rezumatul următoarei activități"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__activity_type_id
+msgid "Next Activity Type"
+msgstr "Tipul următoarei activități"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields.selection,name:nas_webdav_sync.selection__webdav_backend__server_type__nextcloud
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "Nextcloud / ownCloud"
+msgstr "Nextcloud / ownCloud"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Număr de acțiuni"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__message_has_error_counter
+msgid "Number of errors"
+msgstr "Număr de erori"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_backend__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Număr de mesaje care necesită acțiune"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_backend__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Număr de mesaje cu eroare de livrare"
+
+#. module: nas_webdav_sync
+#. odoo-python
+#: code:addons/nas_webdav_sync/models/webdav_backend.py:0
+msgid "Odoo can write to %s"
+msgstr "Odoo poate scrie pe %s"
+
+#. module: nas_webdav_sync
+#: model_terms:ir.actions.act_window,help:nas_webdav_sync.action_webdav_backend
+msgid ""
+"Odoo will copy attachments to it automatically, in one folder per document."
+msgstr ""
+"Odoo va copia automat atașamentele acolo, câte un folder pentru fiecare "
+"document."
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__record_subfolder
+msgid "One folder per record"
+msgstr "Un folder pentru fiecare înregistrare"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__file_types
+msgid "Only file types"
+msgstr "Doar tipurile de fișier"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__sync_from
+msgid "Only files created after"
+msgstr "Doar fișierele create după"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__domain
+msgid "Only records matching"
+msgstr "Doar înregistrările care respectă"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_backend__company_id
+msgid ""
+"Only sync documents of this company (and documents shared by all companies)."
+" Leave empty to sync the documents of every company."
+msgstr ""
+"Sincronizează doar documentele acestei companii (și documentele comune "
+"tuturor companiilor). Lăsați gol pentru a sincroniza documentele tuturor "
+"companiilor."
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_sync_item_list
+msgid "Open document"
+msgstr "Deschide documentul"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_sync_rule__domain
+msgid "Optional filter on the records whose attachments are synced."
+msgstr ""
+"Filtru opțional pe înregistrările ale căror atașamente se sincronizează."
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "Options"
+msgstr "Opțiuni"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields.selection,name:nas_webdav_sync.selection__webdav_backend__server_type__other
+msgid "Other WebDAV server"
+msgstr "Alt server WebDAV"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__password
+msgid "Password"
+msgstr "Parolă"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields.selection,name:nas_webdav_sync.selection__webdav_sync_item__state__pending
+msgid "Pending"
+msgstr "În așteptare"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields.selection,name:nas_webdav_sync.selection__webdav_backend__server_type__qnap
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "QNAP"
+msgstr "QNAP"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__remote_path
+msgid "Remote Path"
+msgstr "Cale pe NAS"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__res_id
+msgid "Resource ID"
+msgstr "ID resursă"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__res_model
+msgid "Resource Model"
+msgstr "Model resursă"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__activity_user_id
+msgid "Responsible User"
+msgstr "Utilizator responsabil"
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "Retry errors"
+msgstr "Reîncearcă erorile"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__root_folder
+msgid "Root Folder"
+msgstr "Folder rădăcină"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__rule_id
+msgid "Rule"
+msgstr "Regulă"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__sequence
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_rule__sequence
+msgid "Sequence"
+msgstr "Secvență"
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_sync_item_search
+msgid "Server"
+msgstr "Server"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__server_type
+msgid "Server Type"
+msgstr "Tip server"
+
+#. module: nas_webdav_sync
+#: model:ir.ui.menu,name:nas_webdav_sync.menu_webdav_backend
+msgid "Servers"
+msgstr "Servere"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__state
+msgid "State"
+msgstr "Stare"
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_sync_item_search
+msgid "Status"
+msgstr "Stare"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_backend__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Stare bazată pe activități\n"
+"Restant: termenul a trecut deja\n"
+"Astăzi: activitatea este azi\n"
+"Planificat: activități viitoare."
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_sync_item__sync_date
+msgid "Sync Date"
+msgstr "Data sincronizării"
+
+#. module: nas_webdav_sync
+#: model:ir.actions.act_window,name:nas_webdav_sync.action_webdav_sync_item
+#: model:ir.ui.menu,name:nas_webdav_sync.menu_webdav_sync_item
+msgid "Sync Log"
+msgstr "Jurnal sincronizare"
+
+#. module: nas_webdav_sync
+#. odoo-python
+#: code:addons/nas_webdav_sync/models/webdav_backend.py:0
+msgid "Sync finished"
+msgstr "Sincronizare încheiată"
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "Sync now"
+msgstr "Sincronizează acum"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__rule_ids
+msgid "Sync rules"
+msgstr "Reguli de sincronizare"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields.selection,name:nas_webdav_sync.selection__webdav_sync_item__state__done
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_list
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_sync_item_search
+msgid "Synced"
+msgstr "Sincronizat"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__synced_count
+msgid "Synced Count"
+msgstr "Număr sincronizate"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__item_ids
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "Synced files"
+msgstr "Fișiere sincronizate"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields.selection,name:nas_webdav_sync.selection__webdav_backend__server_type__synology
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "Synology"
+msgstr "Synology"
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "Test connection"
+msgstr "Testează conexiunea"
+
+#. module: nas_webdav_sync
+#. odoo-python
+#: code:addons/nas_webdav_sync/models/webdav_backend.py:0
+msgid ""
+"The last %(count)s syncs failed:\n"
+"%(error)s"
+msgstr ""
+"Ultimele %(count)s sincronizări au eșuat:\n"
+"%(error)s"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__timeout
+msgid "Timeout (seconds)"
+msgstr "Timp limită (secunde)"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields.selection,name:nas_webdav_sync.selection__webdav_backend__server_type__truenas
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "TrueNAS"
+msgstr "TrueNAS"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_backend__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Tipul activității de excepție pe înregistrare."
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid ""
+"Use <code>https://cloud/remote.php/dav/files/USERNAME</code>\n"
+"                                        and an <b>app password</b> (Settings → Security)."
+msgstr ""
+"Folosiți <code>https://cloud/remote.php/dav/files/USERNAME</code>\n"
+"                                        și o <b>parolă de aplicație</b> (Settings → Security)."
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__username
+msgid "Username"
+msgstr "Utilizator"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__verify_ssl
+msgid "Verify SSL certificate"
+msgstr "Verifică certificatul SSL"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_webdav_backend__url
+msgid "WebDAV URL"
+msgstr "URL WebDAV"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,field_description:nas_webdav_sync.field_ir_attachment__webdav_item_ids
+msgid "Webdav Item"
+msgstr "Element WebDAV"
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "What to sync"
+msgstr "Ce se sincronizează"
+
+#. module: nas_webdav_sync
+#: model:ir.model.fields,help:nas_webdav_sync.field_webdav_backend__delete_remote
+msgid ""
+"When an attachment is deleted in Odoo, delete its copy on the server too."
+msgstr ""
+"Când un atașament este șters în Odoo, se șterge și copia lui de pe server."
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "e.g. Office Synology"
+msgstr "de ex. Synology birou"
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_backend_form
+msgid "https://nas.example.com:5006"
+msgstr "https://nas.example.com:5006"
+
+#. module: nas_webdav_sync
+#: model_terms:ir.ui.view,arch_db:nas_webdav_sync.view_webdav_sync_rule_form
+msgid "pdf, xml, jpg"
+msgstr "pdf, xml, jpg"

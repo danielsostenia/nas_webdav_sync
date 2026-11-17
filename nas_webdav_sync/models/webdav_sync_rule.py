@@ -33,6 +33,14 @@ class WebdavSyncRule(models.Model):
         default="[]",
         help="Optional filter on the records whose attachments are synced.",
     )
+    file_types = fields.Char(
+        "Only file types",
+        help="Comma separated file extensions, e.g. pdf, xml, jpg. Leave empty for all files.",
+    )
+    max_size_mb = fields.Float(
+        "Max file size (MB)",
+        help="Larger files are not uploaded. 0 means no limit.",
+    )
     sync_from = fields.Datetime(
         "Only files created after",
         help="Leave empty to also upload existing attachments.",
@@ -42,6 +50,25 @@ class WebdavSyncRule(models.Model):
     def _onchange_model_id(self):
         if self.model_id and not self.folder_name:
             self.folder_name = self.model_id.name
+
+    def _extensions(self):
+        return [
+            e.strip().lstrip("*").lstrip(".").lower()
+            for e in (self.file_types or "").replace(";", ",").replace(" ", ",").split(",")
+            if e.strip().lstrip("*").lstrip(".")
+        ]
+
+    def _get_file_domain(self):
+        """Attachment filter for the file type and size options."""
+        self.ensure_one()
+        domain = []
+        extensions = self._extensions()
+        if extensions:
+            domain += ["|"] * (len(extensions) - 1)
+            domain += [("name", "=ilike", "%%.%s" % ext) for ext in extensions]
+        if self.max_size_mb > 0:
+            domain.append(("file_size", "<=", int(self.max_size_mb * 1024 * 1024)))
+        return domain
 
     def _domain_eval_context(self):
         """Same names the domain editor and server actions offer."""

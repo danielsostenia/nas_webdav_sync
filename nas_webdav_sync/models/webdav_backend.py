@@ -5,6 +5,7 @@ from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import plaintext2html
 
 from .webdav_client import WebDAVClient, WebDAVError, safe_name
 
@@ -15,12 +16,14 @@ MAX_ATTEMPTS = 5
 SYNC_LOCK_KEY = 0x4E4153
 # records written up to this long before the last sync are checked for renames
 RENAME_MARGIN = timedelta(hours=1)
+# alert after this many failed connections in a row (one hour with the 15 min cron)
+ALERT_AFTER_FAILURES = 4
 
 
 class WebdavBackend(models.Model):
     _name = "webdav.backend"
     _description = "NAS / WebDAV Server"
-    _inherit = ["mail.thread"]
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "sequence, id"
 
     name = fields.Char(required=True, tracking=True)
@@ -73,6 +76,16 @@ class WebdavBackend(models.Model):
         default=False,
         help="When an attachment is deleted in Odoo, delete its copy on the server too.",
     )
+
+    alert_user_id = fields.Many2one(
+        "res.users",
+        "Alert",
+        default=lambda self: self.env.user,
+        domain=[("share", "=", False)],
+        help="Gets a To-Do when the server is unreachable for an hour or files keep failing. "
+             "Followers of the server are notified as well.",
+    )
+    connection_failures = fields.Integer(readonly=True, copy=False)
 
     rule_ids = fields.One2many("webdav.sync.rule", "backend_id", string="Sync rules", copy=True)
     item_ids = fields.One2many("webdav.sync.item", "backend_id", string="Synced files")
@@ -176,6 +189,21 @@ class WebdavBackend(models.Model):
                 self.env.cr.rollback()
                 _logger.exception("NAS sync failed for backend %s", backend.name)
 
+    def _alert(self, summary, details):
+        """Tell the followers (chatter) and give the alert user a To-Do (only one open)."""
+        self.ensure_one()
+        body = plaintext2html(details)
+        self.message_post(body=body, subject=summary, subtype_xmlid="mail.mt_comment")
+        user = self.alert_user_id
+        if not user or not user.active:
+            return
+        todo = self.env.ref("mail.mail_activity_data_todo", raise_if_not_found=False)
+        if self.activity_ids.filtered(lambda a: a.user_id == user and a.activity_type_id == todo):
+            return
+        self.activity_schedule(
+            "mail.mail_activity_data_todo", user_id=user.id, summary=summary, note=body,
+        )
+
     def _try_lock(self):
         """Transaction-level advisory lock: only one sync runs per server.
 
@@ -208,6 +236,7 @@ class WebdavBackend(models.Model):
         ]
         if rule.sync_from:
             domain.append(("create_date", ">=", rule.sync_from))
+        domain += rule._get_file_domain()
         record_domain = list(rule._get_record_domain())
         Model = self.env[rule.model_name]
         company_field = Model._fields.get("company_id")
@@ -322,11 +351,24 @@ class WebdavBackend(models.Model):
             client = self._get_client()
             client.check(self._root())
         except WebDAVError as e:
-            self.write({"last_sync": fields.Datetime.now(), "last_sync_message": str(e)[:250]})
+            failures = self.connection_failures + 1
+            self.write({
+                "last_sync": fields.Datetime.now(),
+                "last_sync_message": str(e)[:250],
+                "connection_failures": failures,
+            })
             _logger.warning("NAS sync %s: %s", self.name, e)
+            if failures == ALERT_AFTER_FAILURES:
+                self._alert(
+                    _("NAS server %s is unreachable", self.name),
+                    _("The last %(count)s syncs failed:\n%(error)s", count=failures, error=e),
+                )
             return None
+        if self.connection_failures:
+            self.connection_failures = 0
 
         out_of_time = False
+        given_up = Item.browse()
         remaining = self.batch_size or 200
         done = errors = 0
         for rule in self.rule_ids.filtered("active"):
@@ -383,6 +425,8 @@ class WebdavBackend(models.Model):
                         "sync_date": fields.Datetime.now(),
                     })
                     errors += 1
+                    if item.attempts >= MAX_ATTEMPTS:
+                        given_up |= item
                     continue
                 used_paths.add(path)
                 item.write({
@@ -393,6 +437,16 @@ class WebdavBackend(models.Model):
                     "sync_date": fields.Datetime.now(),
                 })
                 done += 1
+        if given_up:
+            self._alert(
+                _("%(count)s file(s) could not be uploaded to %(name)s",
+                  count=len(given_up), name=self.name),
+                _("Gave up after %(max)s attempts (see the Sync Log, then use Retry errors):\n%(files)s",
+                  max=MAX_ATTEMPTS,
+                  files="\n".join("- %s: %s" % (i.attachment_name or i.attachment_id.id,
+                                                 (i.error_message or "")[:150])
+                                  for i in given_up[:20])),
+            )
         message = _("%(done)s file(s) uploaded, %(errors)s error(s)", done=done, errors=errors)
         self.write({"last_sync": fields.Datetime.now(), "last_sync_message": message})
         _logger.info("NAS sync %s: %s", self.name, message)
