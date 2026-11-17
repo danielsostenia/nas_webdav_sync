@@ -8,6 +8,11 @@ class WebdavSyncItem(models.Model):
     _order = "sync_date desc, id desc"
     _rec_name = "remote_path"
 
+    _backend_attachment_uniq = models.Constraint(
+        "UNIQUE(backend_id, attachment_id)",
+        "Each file is tracked only once per server.",
+    )
+
     backend_id = fields.Many2one("webdav.backend", required=True, ondelete="cascade", index=True)
     rule_id = fields.Many2one("webdav.sync.rule", ondelete="set null")
     attachment_id = fields.Many2one("ir.attachment", ondelete="cascade", index=True)

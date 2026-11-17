@@ -1,8 +1,15 @@
 import base64
+from contextlib import closing
+from unittest.mock import patch
+
+from psycopg2 import IntegrityError
 
 from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.sql_db import db_connect
 from odoo.tests import TransactionCase, new_test_user, tagged
+from odoo.tools import mute_logger
 
+from ..models.webdav_backend import SYNC_LOCK_KEY
 from .mock_dav import Store, serve
 
 
@@ -35,6 +42,8 @@ class TestNasSync(TransactionCase):
 
     def setUp(self):
         super().setUp()
+        # post-commit hooks open registry cursors: let them see this transaction
+        self.registry_enter_test_mode()
         self.store.files.clear()
         self.store.dirs.clear()
         self.store.dirs.add("")
@@ -127,6 +136,8 @@ class TestNasSync(TransactionCase):
         path = att.webdav_item_ids.remote_path
         user = new_test_user(self.env, "nas_emp", groups="base.group_user,base.group_partner_manager")
         att.with_user(user).unlink()
+        self.assertIn(path, self.store.files, "remote copy kept until the commit")
+        self.env.cr.postcommit.run()
         self.assertNotIn(path, self.store.files)
         self.assertFalse(self.env["webdav.sync.item"].search([("remote_path", "=", path)]))
 
@@ -192,3 +203,50 @@ class TestNasSync(TransactionCase):
         res = self.backend.action_sync_now()
         self.assertEqual(res["tag"], "display_notification")
         self.backend.copy()
+
+    def test_12_delete_remote_rolled_back(self):
+        self.backend.delete_remote = True
+        att = self._att(self.partner, "keep.txt")
+        self.backend._sync()
+        path = att.webdav_item_ids.remote_path
+        # unlink undone by a savepoint: the post-commit hook still runs later
+        with self.assertRaises(ZeroDivisionError), self.env.cr.savepoint():
+            att.unlink()
+            1 / 0
+        self.env.invalidate_all()
+        self.assertTrue(att.exists())
+        self.env.cr.postcommit.run()
+        self.assertIn(path, self.store.files, "attachment still exists: keep the copy")
+
+    def test_13_unique_item(self):
+        att = self._att(self.partner, "u.txt")
+        self.backend._sync()
+        with self.assertRaises(IntegrityError), mute_logger("odoo.sql_db"), self.env.cr.savepoint():
+            self.env["webdav.sync.item"].create({
+                "backend_id": self.backend.id, "attachment_id": att.id,
+            })
+
+    def test_14_one_sync_per_server(self):
+        self._att(self.partner, "l.txt")
+        # another connection holds the lock (= a sync already running)
+        with closing(db_connect(self.env.cr.dbname).cursor()) as other:
+            other.execute("SELECT pg_advisory_xact_lock(%s, %s)", [SYNC_LOCK_KEY, self.backend.id])
+            with self.assertRaisesRegex(UserError, "already running"):
+                self.backend.action_sync_now()
+            self.assertIsNone(self.backend._sync(commit=True), "cron skips it")
+            self.assertFalse(self.store.files)
+            other.rollback()
+        self.assertEqual(self.backend._sync(), (1, 0))
+
+    def test_15_cron_commits_progress(self):
+        for i in range(3):
+            self._att(self.partner, "c%s.txt" % i)
+        Cron = self.registry["ir.cron"]
+        with patch.object(Cron, "_commit_progress", return_value=100.0) as progress:
+            self.assertEqual(self.backend._sync(commit=True), (3, 0))
+        self.assertEqual(progress.call_count, 2, "commit after each file but the last")
+        for i in range(3):
+            self._att(self.partner, "d%s.txt" % i)
+        with patch.object(Cron, "_commit_progress", return_value=0.0):
+            self.assertEqual(self.backend._sync(commit=True), (1, 0), "stops when out of time")
+        self.assertEqual(self.backend._sync(), (2, 0), "the rest goes next run")

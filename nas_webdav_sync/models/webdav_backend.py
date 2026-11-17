@@ -10,6 +10,8 @@ from .webdav_client import WebDAVClient, WebDAVError, safe_name
 _logger = logging.getLogger(__name__)
 
 MAX_ATTEMPTS = 5
+# first key of the advisory lock taken while a server is being synced ("NAS")
+SYNC_LOCK_KEY = 0x4E4153
 
 
 class WebdavBackend(models.Model):
@@ -161,9 +163,21 @@ class WebdavBackend(models.Model):
     def _cron_sync(self):
         for backend in self.search([]):
             try:
-                backend._sync()
+                backend._sync(commit=True)
             except Exception:  # never let one server block the others
+                self.env.cr.rollback()
                 _logger.exception("NAS sync failed for backend %s", backend.name)
+
+    def _try_lock(self):
+        """Transaction-level advisory lock: only one sync runs per server.
+
+        Released automatically on commit/rollback (never leaks on errors);
+        the cron takes it again after each intermediate commit.
+        """
+        self.env.cr.execute(
+            "SELECT pg_try_advisory_xact_lock(%s, %s)", [SYNC_LOCK_KEY, self.id]
+        )
+        return self.env.cr.fetchone()[0]
 
     def _pending_attachments(self, rule, limit):
         """Attachments matching `rule` not yet synced to this backend."""
@@ -209,8 +223,19 @@ class WebdavBackend(models.Model):
             path = "/".join(p for p in parts if p) + "/" + filename
         return path
 
-    def _sync(self):
+    def _sync(self, commit=False):
+        """Upload pending files. With `commit` (cron), progress is committed
+        after every file, so a timeout or crash never loses finished uploads.
+
+        Returns (done, errors), or None when the server is unreachable or
+        another sync of the same server is already running.
+        """
         self.ensure_one()
+        if not self._try_lock():
+            if not commit:
+                raise UserError(_("A sync of %s is already running. Try again in a moment.", self.name))
+            _logger.info("NAS sync %s: already running, skipped", self.name)
+            return None
         Item = self.env["webdav.sync.item"].sudo()
         try:
             client = self._get_client()
@@ -218,12 +243,13 @@ class WebdavBackend(models.Model):
         except WebDAVError as e:
             self.write({"last_sync": fields.Datetime.now(), "last_sync_message": str(e)[:250]})
             _logger.warning("NAS sync %s: %s", self.name, e)
-            return
+            return None
 
+        out_of_time = False
         remaining = self.batch_size or 200
         done = errors = 0
         for rule in self.rule_ids.filtered("active"):
-            if remaining <= 0:
+            if remaining <= 0 or out_of_time:
                 break
             attachments = self._pending_attachments(rule, remaining)
             if not attachments:
@@ -240,6 +266,13 @@ class WebdavBackend(models.Model):
             ]).mapped("remote_path"))
             Model = self.env[rule.model_name].sudo()
             for att in attachments:
+                if commit and (done or errors):
+                    # Commit the previous file. Stop when the cron is out of
+                    # time or a manual sync took the lock in the meantime.
+                    time_left = self.env["ir.cron"]._commit_progress(processed=1)
+                    if time_left <= 0 or not self._try_lock():
+                        out_of_time = True
+                        break
                 remaining -= 1
                 item = existing.get(att.id) or Item.create({
                     "backend_id": self.id,
