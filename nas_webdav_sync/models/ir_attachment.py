@@ -21,11 +21,15 @@ class IrAttachment(models.Model):
     def write(self, vals):
         res = super().write(vals)
         if any(f in vals for f in CONTENT_FIELDS):
-            # Upload the new content again (it overwrites the existing remote copy)
-            self.env["webdav.sync.item"].sudo().search([
+            # Upload the new content again (it overwrites the existing remote
+            # copy), unless the content is the same as what is on the NAS
+            items = self.env["webdav.sync.item"].sudo().search([
                 ("attachment_id", "in", self.ids),
                 ("state", "!=", "pending"),
-            ]).write({"state": "pending", "attempts": 0, "error_message": False})
+            ])
+            items.filtered(
+                lambda i: i.state != "done" or i.checksum != i.attachment_id.checksum
+            ).write({"state": "pending", "attempts": 0, "error_message": False})
         return res
 
     def unlink(self):

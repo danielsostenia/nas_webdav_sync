@@ -121,6 +121,8 @@ class TestNasSync(TransactionCase):
         self.backend.timeout = 2
         self.assertIsNone(self.backend._sync())
         self.assertIn("failed", self.backend.last_sync_message)
+        # only this server: other servers of the database are not part of the test
+        self.env["webdav.backend"].search([("id", "!=", self.backend.id)]).active = False
         self.env["webdav.backend"]._cron_sync()  # must not raise
 
     def test_06_delete_remote(self):
@@ -147,6 +149,7 @@ class TestNasSync(TransactionCase):
         # simulate orphan attachment (record removed in SQL)
         self.env.cr.execute("UPDATE ir_attachment SET res_id = 999999999 WHERE id = %s", [att.id])
         att.invalidate_recordset()
+        self.backend.company_id = False  # the company filter already skips it
         self.assertEqual(self.backend._sync(), (0, 1))
         self.assertEqual(att.webdav_item_ids.attempts, 5)
 
@@ -250,3 +253,62 @@ class TestNasSync(TransactionCase):
         with patch.object(Cron, "_commit_progress", return_value=0.0):
             self.assertEqual(self.backend._sync(commit=True), (1, 0), "stops when out of time")
         self.assertEqual(self.backend._sync(), (2, 0), "the rest goes next run")
+
+    def test_16_company_filter(self):
+        company2 = self.env["res.company"].create({"name": "Other Co"})
+        mine = self.env["res.partner"].create({"name": "Mine", "company_id": self.env.company.id})
+        other = self.env["res.partner"].create({"name": "Other", "company_id": company2.id})
+        a_shared = self._att(self.partner, "shared.txt")
+        a_mine = self._att(mine, "mine.txt")
+        a_other = self._att(other, "other.txt")
+        self.backend.company_id = self.env.company
+        self.assertEqual(self.backend._sync(), (2, 0))
+        self.assertTrue(a_shared.webdav_item_ids)
+        self.assertTrue(a_mine.webdav_item_ids)
+        self.assertFalse(a_other.webdav_item_ids, "documents of another company are skipped")
+        self.backend.company_id = False
+        self.assertEqual(self.backend._sync(), (1, 0), "no company: every company is synced")
+
+    def test_17_renamed_record_folder_moved(self):
+        a1 = self._att(self.partner2, "r1.txt", b"one")
+        a2 = self._att(self.partner2, "r2.txt", b"two")
+        self.backend._sync()
+        old = "Odoo/Test/Partners/Beta (%s)" % self.partner2.id
+        self.assertIn(old + "/r1.txt", self.store.files)
+        self.partner2.name = "Beta Group"
+        self.store.log.clear()
+        self.assertEqual(self.backend._sync(), (0, 0))
+        new = "Odoo/Test/Partners/Beta Group (%s)" % self.partner2.id
+        self.assertEqual(self.store.files[new + "/r1.txt"][0], b"one")
+        self.assertEqual(self.store.files[new + "/r2.txt"][0], b"two")
+        self.assertNotIn(old, self.store.dirs)
+        self.assertNotIn("PUT", [m for m, _p in self.store.log], "moved, not re-uploaded")
+        self.assertEqual(a1.webdav_item_ids.remote_path, new + "/r1.txt")
+        self.assertEqual(a2.webdav_item_ids.remote_path, new + "/r2.txt")
+        # a new file goes to the new folder
+        a3 = self._att(self.partner2, "r3.txt")
+        self.backend._sync()
+        self.assertEqual(a3.webdav_item_ids.remote_path, new + "/r3.txt")
+
+    def test_17b_rename_when_target_exists_or_files_gone(self):
+        a1 = self._att(self.partner2, "t1.txt", b"one")
+        a2 = self._att(self.partner2, "t2.txt", b"two")
+        self.backend._sync()
+        old = "Odoo/Test/Partners/Beta (%s)" % self.partner2.id
+        new = "Odoo/Test/Partners/Beta SA (%s)" % self.partner2.id
+        self.store.dirs.add(new)  # the target folder already exists on the NAS
+        del self.store.files[old + "/t2.txt"]  # and someone deleted a file there
+        self.partner2.name = "Beta SA"
+        self.assertEqual(self.backend._sync(), (1, 0), "the missing file is uploaded again")
+        self.assertEqual(self.store.files[new + "/t1.txt"][0], b"one")
+        self.assertEqual(self.store.files[new + "/t2.txt"][0], b"two")
+        self.assertEqual(a1.webdav_item_ids.remote_path, new + "/t1.txt")
+        self.assertEqual(a2.webdav_item_ids.remote_path, new + "/t2.txt")
+
+    def test_18_same_content_not_reuploaded(self):
+        att = self._att(self.partner, "same.txt", b"same")
+        self.backend._sync()
+        att.datas = base64.b64encode(b"same")
+        self.assertEqual(att.webdav_item_ids.state, "done", "identical content: nothing to do")
+        att.datas = base64.b64encode(b"other")
+        self.assertEqual(att.webdav_item_ids.state, "pending")

@@ -113,6 +113,23 @@ class WebDAVClient:
             self._raise(resp, "Delete '%s'" % path)
         return True
 
+    def move(self, src, dst, is_dir=False):
+        """Rename/move a file or folder. Never overwrites an existing target."""
+        parent = "/".join(self._segments(dst)[:-1])
+        if parent:
+            self.ensure_dir(parent)
+        headers = {"Destination": self._url(dst, is_dir), "Overwrite": "F"}
+        resp = self._request("MOVE", src, is_dir=is_dir, headers=headers)
+        if resp.status_code not in (201, 204):
+            self._raise(resp, "Move '%s' to '%s'" % (src, dst))
+        if is_dir:
+            # cached folder names below `src` are no longer valid
+            prefix = "/".join(self._segments(src))
+            self._known_dirs = {
+                d for d in self._known_dirs if d != prefix and not d.startswith(prefix + "/")
+            }
+        return True
+
     def exists(self, path):
         resp = self._request("PROPFIND", path, headers={"Depth": "0"})
         return resp.status_code in (200, 207)

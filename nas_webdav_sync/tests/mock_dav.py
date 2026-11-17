@@ -1,4 +1,4 @@
-"""Tiny in-memory WebDAV server (PROPFIND/MKCOL/PUT/DELETE/GET) for tests.
+"""Tiny in-memory WebDAV server (PROPFIND/MKCOL/PUT/DELETE/GET/MOVE) for tests.
 
 Behaves like Synology: MKCOL on existing dir -> 405, MKCOL without parent -> 409,
 PUT without parent -> 409, basic auth required.
@@ -6,7 +6,7 @@ PUT without parent -> 409, basic auth required.
 import base64
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from urllib.parse import unquote
+from urllib.parse import unquote, urlsplit
 
 
 class Store:
@@ -82,13 +82,32 @@ def make_handler(store):
                     del store.files[p]
                     return self._send(204)
                 return self._send(404)
+            if m == "MOVE":
+                dest = unquote(urlsplit(self.headers.get("Destination", "")).path).strip("/")
+                if store.prefix:
+                    dest = dest[len(store.prefix):].strip("/")
+                if p not in store.dirs and p not in store.files:
+                    return self._send(404)
+                if dest in store.dirs or dest in store.files:
+                    return self._send(412)
+                if dest.rpartition("/")[0] not in store.dirs:
+                    return self._send(409)
+                if p in store.files:
+                    store.files[dest] = store.files.pop(p)
+                    return self._send(201)
+                for d in [d for d in store.dirs if d == p or d.startswith(p + "/")]:
+                    store.dirs.discard(d)
+                    store.dirs.add(dest + d[len(p):])
+                for f in [f for f in store.files if f.startswith(p + "/")]:
+                    store.files[dest + f[len(p):]] = store.files.pop(f)
+                return self._send(201)
             if m == "GET":
                 if p in store.files:
                     return self._send(200, store.files[p][0])
                 return self._send(404)
             self._send(405)
 
-        do_PROPFIND = do_MKCOL = do_PUT = do_DELETE = do_GET = _handle
+        do_PROPFIND = do_MKCOL = do_PUT = do_DELETE = do_GET = do_MOVE = _handle
 
     return H
 

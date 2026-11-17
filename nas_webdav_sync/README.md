@@ -33,8 +33,12 @@ Odoo/
     `company_ids`, `context_today()` and `relativedelta` available;
   - optional **only files created after** date, to skip old attachments.
 - Scheduled upload every 15 minutes, plus **Sync now** and **Test connection** buttons.
-- **Changed files are uploaded again** over the same remote file; renaming an attachment
-  in Odoo does not create a new copy.
+- **Changed files are uploaded again** over the same remote file; saving the same content
+  again uploads nothing, and renaming an attachment in Odoo does not create a new copy.
+- **Renamed records**: when *ACME SRL* becomes *ACME Group SRL*, its folder is renamed on
+  the NAS (WebDAV `MOVE`), without uploading the files again.
+- **Multi-company**: a server set to a company syncs only that company's documents (and
+  documents shared by all companies); leave the company empty to sync every company.
 - Duplicate file names in the same folder get the attachment id as suffix
   (`scan (57).pdf`), so nothing is overwritten by mistake.
 - Optional: **delete the NAS copy** when the attachment is deleted in Odoo. The remote
@@ -75,18 +79,23 @@ the scheduled job. Uploaded files and errors are listed in *NAS Sync → Sync Lo
 
 ## Technical notes
 
-- `models/webdav_client.py`: minimal WebDAV client (`PROPFIND`, `MKCOL`, `PUT`, `DELETE`)
+- `models/webdav_client.py`: minimal WebDAV client (`PROPFIND`, `MKCOL`, `PUT`, `MOVE`, `DELETE`)
   built on `requests`, with no Odoo imports. Folders are created like `mkdir -p` and
   cached per run; file and folder names are made safe for every NAS (`safe_name`).
 - `webdav.backend`: a server, its options and the sync logic (`_sync`). A transaction-level
   PostgreSQL advisory lock allows one sync per server. The cron (`_cron_sync`) calls
-  `ir.cron._commit_progress` after every file.
+  `ir.cron._commit_progress` after every file. Before uploading, each run renames the
+  folders of records modified since their last sync (`_move_renamed_folders`); if the
+  new folder already exists, the files are moved one by one. On a server with a company,
+  models with a `company_id` field are filtered on `[company, False]`; a record rule
+  limits the servers to the user's companies.
 - `webdav.sync.rule`: what to sync. The record filter is evaluated with `safe_eval`,
   validated on save and applied as a sub-query.
 - `webdav.sync.item`: one line per (server, attachment), unique, with state
   `pending` / `done` / `error`, remote path and checksum.
 - `ir.attachment`:
-  - writing `datas` / `raw` sets the item back to `pending` (re-upload);
+  - writing `datas` / `raw` sets the item back to `pending` (re-upload), unless the
+    checksum is the one already uploaded;
   - `unlink` deletes the remote copy in a post-commit hook, and only for attachments
     that really no longer exist.
 - Only attachments with `type = binary`, a `res_model` / `res_id` and no `res_field`
@@ -104,5 +113,6 @@ The suite (`tests/test_sync.py`) runs against an in-process mock WebDAV server
 (`tests/mock_dav.py`), so it needs neither a NAS nor internet access. It covers folder
 layout and duplicate names, retries, batch size and record filters, an unreachable server,
 remote deletion (including a rolled back deletion), deleted records, access for regular
-users, re-upload of changed files, the unique constraint, one sync per server and the
-cron's intermediate commits.
+users, re-upload of changed files (and no re-upload of identical content), the unique
+constraint, one sync per server, the cron's intermediate commits, the company filter
+and renamed record folders.

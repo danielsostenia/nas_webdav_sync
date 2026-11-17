@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import mimetypes
+from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
@@ -12,6 +13,8 @@ _logger = logging.getLogger(__name__)
 MAX_ATTEMPTS = 5
 # first key of the advisory lock taken while a server is being synced ("NAS")
 SYNC_LOCK_KEY = 0x4E4153
+# records written up to this long before the last sync are checked for renames
+RENAME_MARGIN = timedelta(hours=1)
 
 
 class WebdavBackend(models.Model):
@@ -23,7 +26,12 @@ class WebdavBackend(models.Model):
     name = fields.Char(required=True, tracking=True)
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True, tracking=True)
-    company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
+    company_id = fields.Many2one(
+        "res.company",
+        default=lambda self: self.env.company,
+        help="Only sync documents of this company (and documents shared by all "
+             "companies). Leave empty to sync the documents of every company.",
+    )
 
     server_type = fields.Selection(
         [
@@ -200,7 +208,12 @@ class WebdavBackend(models.Model):
         ]
         if rule.sync_from:
             domain.append(("create_date", ">=", rule.sync_from))
-        record_domain = rule._get_record_domain()
+        record_domain = list(rule._get_record_domain())
+        Model = self.env[rule.model_name]
+        company_field = Model._fields.get("company_id")
+        if (self.company_id and company_field and company_field.store
+                and company_field.comodel_name == "res.company"):
+            record_domain.append(("company_id", "in", [self.company_id.id, False]))
         if record_domain:
             # Sub-query instead of a list of ids: stays fast on large models
             records = self.env[rule.model_name].sudo().with_context(
@@ -212,7 +225,7 @@ class WebdavBackend(models.Model):
     def _remote_path(self, rule, attachment, record, used_paths):
         parts = [self._root(), safe_name(rule.folder_name or rule.model_id.name)]
         if rule.record_subfolder:
-            parts.append(safe_name("%s (%s)" % (record.display_name, record.id)))
+            parts.append(self._record_folder(record))
         filename = safe_name(attachment.name or "file-%s" % attachment.id)
         path = "/".join(p for p in parts if p) + "/" + filename
         if path in used_paths:
@@ -222,6 +235,74 @@ class WebdavBackend(models.Model):
             filename = "%s (%s)%s" % (stem, attachment.id, "." + ext if ext else "")
             path = "/".join(p for p in parts if p) + "/" + filename
         return path
+
+    def _record_folder(self, record):
+        return safe_name("%s (%s)" % (record.display_name, record.id))
+
+    def _move_renamed_folders(self, client, rule):
+        """Rename '<record> (<id>)' folders on the NAS after the record was renamed.
+
+        Only records modified since their files were synced are checked.
+        Returns the number of moved folders.
+        """
+        if not rule.record_subfolder:
+            return 0
+        items = self.env["webdav.sync.item"].sudo().search([
+            ("backend_id", "=", self.id),
+            ("rule_id", "=", rule.id),
+            ("remote_path", "!=", False),
+            ("attachment_id.res_model", "=", rule.model_name),
+        ])
+        by_record = {}
+        for item in items:
+            by_record.setdefault(item.attachment_id.res_id, self.env["webdav.sync.item"])
+            by_record[item.attachment_id.res_id] |= item
+        records = self.env[rule.model_name].sudo().browse(list(by_record)).exists()
+        moved = 0
+        for record in records:
+            record_items = by_record[record.id]
+            last_sync = min((i.sync_date for i in record_items if i.sync_date), default=None)
+            # margin: a rename committed by a transaction that started before
+            # the last sync has an older write_date
+            if last_sync and record.write_date and record.write_date < last_sync - RENAME_MARGIN:
+                continue
+            new_name = self._record_folder(record)
+            by_dir = {}
+            for item in record_items:
+                folder = item.remote_path.rpartition("/")[0]
+                if folder.rpartition("/")[2] != new_name:
+                    by_dir.setdefault(folder, []).append(item)
+            for old_dir, dir_items in by_dir.items():
+                new_dir = old_dir.rpartition("/")[0] + "/" + new_name
+                moved += self._move_folder(client, old_dir, new_dir, dir_items)
+        return moved
+
+    def _move_folder(self, client, old_dir, new_dir, items):
+        now = fields.Datetime.now()
+        try:
+            client.move(old_dir, new_dir, is_dir=True)
+        except WebDAVError as e:
+            # The new folder already exists (or the old one is gone): move the
+            # files one by one, re-upload the ones missing on the NAS.
+            _logger.info("NAS sync %s: folder move failed (%s), moving files", self.name, e)
+            for item in items:
+                new_path = new_dir + "/" + item.remote_path.rpartition("/")[2]
+                try:
+                    if client.exists(item.remote_path):
+                        client.move(item.remote_path, new_path)
+                        item.write({"remote_path": new_path, "sync_date": now})
+                    else:
+                        item.write({"remote_path": new_path, "state": "pending", "attempts": 0})
+                except WebDAVError as err:
+                    _logger.warning("NAS sync %s: could not move %s: %s",
+                                    self.name, item.remote_path, err)
+            return 1
+        for item in items:
+            item.write({
+                "remote_path": new_dir + item.remote_path[len(old_dir):],
+                "sync_date": now,
+            })
+        return 1
 
     def _sync(self, commit=False):
         """Upload pending files. With `commit` (cron), progress is committed
@@ -251,6 +332,7 @@ class WebdavBackend(models.Model):
         for rule in self.rule_ids.filtered("active"):
             if remaining <= 0 or out_of_time:
                 break
+            self._move_renamed_folders(client, rule)
             attachments = self._pending_attachments(rule, remaining)
             if not attachments:
                 continue

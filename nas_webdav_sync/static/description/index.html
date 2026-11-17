@@ -35,6 +35,22 @@
     </div>
   </div>
 
+  <div style="padding:24px 16px 0">
+    <h2>See it in action</h2>
+    <figure style="margin:0 0 28px">
+      <img src="screenshot_server.png" alt="NAS server form" style="width:100%;border:1px solid #e5e7eb;border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,.08)"/>
+      <figcaption style="text-align:center;color:#6b7280;font-size:14px;margin-top:8px">Connect a NAS: URL, username, password, then <b>Test connection</b>.</figcaption>
+    </figure>
+    <figure style="margin:0 0 28px">
+      <img src="screenshot_rule.png" alt="Sync rule" style="width:100%;border:1px solid #e5e7eb;border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,.08)"/>
+      <figcaption style="text-align:center;color:#6b7280;font-size:14px;margin-top:8px">Choose a document type, its folder and an optional record filter.</figcaption>
+    </figure>
+    <figure style="margin:0 0 28px">
+      <img src="screenshot_log.png" alt="Sync log" style="width:100%;border:1px solid #e5e7eb;border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,.08)"/>
+      <figcaption style="text-align:center;color:#6b7280;font-size:14px;margin-top:8px">Every file in the Sync Log: path on the NAS, status and errors.</figcaption>
+    </figure>
+  </div>
+
   <div style="padding:24px 16px">
     <h2>Works with</h2>
     <ul style="font-size:16px;line-height:1.8">
@@ -54,8 +70,10 @@
 
     <h2>Features</h2>
     <ul style="font-size:16px;line-height:1.8">
-      <li>Multiple NAS servers, multi-company aware</li>
+      <li>Multiple NAS servers; multi-company: each server can sync only one company's documents</li>
       <li>One folder per document type, optional subfolder per record</li>
+      <li>Renamed record? Its folder is renamed on the NAS too (no re-upload)</li>
+      <li>Changed files re-uploaded over the old copy; unchanged ones are skipped</li>
       <li>Record filters (domain) and &ldquo;only files created after&rdquo; date</li>
       <li>Optional: delete the NAS copy when the file is deleted in Odoo</li>
       <li>Duplicate file names handled automatically</li>
