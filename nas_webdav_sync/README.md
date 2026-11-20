@@ -22,7 +22,7 @@ Odoo/
 - **Version:** 19.0
 - **Depends on:** `base`, `mail` (Python: `requests`)
 - **Editions:** Community and Enterprise, Odoo.sh or on-premise
-- **License:** OPL-1
+- **License:** LGPL-3 (free)
 
 ## Features
 

@@ -7,12 +7,10 @@
 Sync Odoo attachments to your NAS or Nextcloud over WebDAV.
 One module, no heavy dependencies, set up in five minutes.
 """,
-    "version": "19.0.1.2.0",
+    "version": "19.0.1.2.1",
     "category": "Productivity/Documents",
     "author": "Banica Daniel",
-    "license": "OPL-1",
-    "price": 79.0,
-    "currency": "EUR",
+    "license": "LGPL-3",
     "depends": ["base", "mail"],
     "external_dependencies": {"python": ["requests"]},
     "data": [
